@@ -2,7 +2,7 @@
 	Demonstrate how to draw fast antialiased lines, circles and ellipses
 	using the bresenham algorithm.
 
-	The FLTK interface hides the implementation, that 'draws' points
+	The FLTK interface hides the implementation, which 'draws' points
 	into a memory buffer using transparency. The result is finally
 	drawn by FLTK as alpha image.
 
