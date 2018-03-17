@@ -5,6 +5,8 @@
 
 	SVG images are created "on the fly".
 
+	Needs FLTK 1.4 with SVG support enabled.
+
 	wcout 2018/03/15
 
 */

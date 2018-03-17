@@ -10,6 +10,8 @@
 	Speed of SVG rendering is of course way slower than FLTK drawing, but
 	it seems fair enough for rendering things that don't change very often.
 
+	Needs FLTK 1.4 with SVG support enabled.
+
 	wcout 2018/03/15
 */
 #include <FL/Fl.H>
