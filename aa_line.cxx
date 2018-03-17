@@ -6,7 +6,7 @@
 	into a memory buffer using transparency. The result is finally
 	drawn by FLTK as alpha image.
 
-	wcout 2018/03/25
+	wcout 2018/03/15
 */
 #include <cmath>
 #include <algorithm>

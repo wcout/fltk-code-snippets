@@ -10,7 +10,7 @@
 	Speed of SVG rendering is of course way slower than FLTK drawing, but
 	it seems fair enough for rendering things that don't change very often.
 
-	wcout 2018/03/25
+	wcout 2018/03/15
 */
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>

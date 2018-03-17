@@ -5,7 +5,7 @@
 
 	SVG images are created "on the fly".
 
-	wcout 2018/03/25
+	wcout 2018/03/15
 
 */
 #include <FL/Fl_Window.H>
