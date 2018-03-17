@@ -17,8 +17,8 @@
 static void setPixelAA( int x, int y, unsigned char alpha );
 static void setPixel( int x, int y );
 
-#include "bresenham.c"
-#include "bresenham_ext.c"
+#include "contrib/bresenham.c"
+#include "contrib/bresenham_ext.c"
 
 
 // FLTK interface
