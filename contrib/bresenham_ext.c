@@ -1,4 +1,7 @@
-/* extension to bresenham.c for filled circles/ellipses */
+/*
+   extension to bresenham.c for filled circles/ellipses
+   wcout 2018/03/25
+*/
 void plotFilledCircle(int xm, int ym, int r)
 {
    int x = -r, y = 0, err = 2-2*r;                /* bottom left to top right */
@@ -57,8 +60,8 @@ void plotFilledEllipse(int xm, int ym, int a, int b)
    long e2 = (long)b*b, err = (long)x*(2*e2+x)+e2;         /* error of 1.step */
 
    do {
-       plotLine(xm-x, ym+y, xm+x,ym+y);                                 /*   I. Quadrant */
-       plotLine(xm-x, ym-y, xm+x, ym-y);                                 /*  IV. Quadrant */
+       plotLine(xm-x, ym+y, xm+x,ym+y);                      /*   I. Quadrant */
+       plotLine(xm-x, ym-y, xm+x, ym-y);                     /*  IV. Quadrant */
        e2 = 2*err;
        if (e2 >= (x*2+1)*(long)b*b)                           /* e_xy+e_x > 0 */
           err += (++x*2+1)*(long)b*b;
