@@ -164,5 +164,5 @@ int main()
 	win.resizable( win );
 	win.end();
 	win.show();
-   return Fl::run();
+	return Fl::run();
 }
