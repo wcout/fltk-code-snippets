@@ -25,7 +25,7 @@ static void setPixel( int x, int y );
 #include <FL/fl_draw.H>
 #include <FL/Fl.H>
 
-static uchar *Screen = 0;
+static uchar *OffScreenBuf = 0;
 static int W = 0;
 static int H = 0;
 
@@ -33,11 +33,11 @@ static int H = 0;
 static void setPixelAA( int x, int y, unsigned char alpha )
 {
 	// draw a pixel in current color at x/y with alpha value
-	if ( Screen )
+	if ( OffScreenBuf )
 	{
 		if ( x <  0 || y < 0 || x >= W || y >= H )
 			return;
-		uchar *pixel = Screen + y * 4 * W + x * 4;
+		uchar *pixel = OffScreenBuf + y * 4 * W + x * 4;
 		Fl::get_color( fl_color(), pixel[0], pixel[1], pixel[2] );
 		pixel[3] = 255 - alpha;
 	}
@@ -52,20 +52,22 @@ static void setPixel( int x, int y )
 
 void fl_begin_aa( int w_, int h_ )
 {
-	Screen = new uchar[w_ * h_ * 4];
+	OffScreenBuf = new uchar[w_ * h_ * 4];
 	W = w_;
 	H = h_;
-	memset( Screen, 0 , W * H * 4 );
+	memset( OffScreenBuf, 0 , W * H * 4 );
 }
 
 void fl_end_aa( int x_ = 0, int y_ = 0 )
 {
-	if ( !Screen )
+	if ( !OffScreenBuf )
 		return;
-	Fl_RGB_Image *rgb = new Fl_RGB_Image( Screen, W, H, 4 );
-	rgb->draw( x_, y_ );
-	delete[] Screen;
-	Screen = 0;
+	Fl_RGB_Image *rgb = new Fl_RGB_Image( OffScreenBuf, W, H, 4 );
+	if ( rgb )
+		rgb->draw( x_, y_ );
+	delete[] OffScreenBuf;
+	OffScreenBuf = 0;
+	delete rgb;
 }
 
 void fl_line_aa( int x0_, int y0_, int x1_, int y1_, float width_ = 1. )
