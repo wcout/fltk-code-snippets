@@ -30,9 +30,10 @@ public:
 		_frames( 0 ),
 		_paused( false )
 	{
-		color( fl_rgb_color( 0, 0, 0 ) ); // start with black
+		color( fl_rgb_color( 0, 0, 0 ) ); // start with black bg color
 		_box = new Fl_Box( 0, 0, w_, h_ );
 		_box->labelcolor( FL_GREEN );
+		_box->labeltype( FL_EMBOSSED_LABEL );
 		end();
 		setTitle();
 	}
@@ -52,11 +53,14 @@ public:
 	}
 	virtual void update()
 	{
+		// check if in paused mode
 		if ( _paused )
 			return;
 
+		// increment frame count
 		_frames++;
-		// cycle gray-ramp of background color
+
+		// just a demo update action: cycle gray-ramp of background color
 		Fl_Color c = color();
 		uchar r, g, b;
 		Fl::get_color( c, r, g, b );
@@ -64,8 +68,10 @@ public:
 		g++;
 		b++;
 		color( fl_rgb_color( r, g, b ) );
-		if ( _frames == FPS ) // one cyle completed
+
+		if ( _frames == FPS ) // one cyle completed?
 		{
+			// display completed cycle count (=count seconds)
 			_frames = 0;
 			_cnt++;
 			char buf[20];
@@ -73,6 +79,7 @@ public:
 			_box->labelsize( h() / 3 );
 			_box->copy_label( buf );
 		}
+		// trigger redisplay of window contents
 		redraw();
 	}
 private:
@@ -85,9 +92,10 @@ private:
 int main()
 {
 	static Fl_Waiter waiter;
-	if ( !waiter.ready() )
+	if ( !waiter.ready() ) // should only happen on very old WIN32 platform
 		fprintf( stderr, "Could not initialise HiRes timer API\n" );
 
+	// tell waiter the frame rate to obey
 	waiter.FPS( FPS );
 
 	MyWindow win( 400, 400 );
