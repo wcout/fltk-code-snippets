@@ -8,4 +8,4 @@ All of these can be compiled with
 
 	`fltk-config --use-images --compile SOURCE-FILE.cxx`
 
-**Tested on Linux only.**
+**Tested on Linux only (except explicitely stated otherwise).**
