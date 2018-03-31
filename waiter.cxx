@@ -12,6 +12,8 @@
   wcout 2018/03/30
 
 */
+#include <iostream>
+#define LOG(x) { std::cout << x << std::endl; }
 #include "Fl_Waiter.H"
 
 #include <FL/Fl_Double_Window.H>
@@ -91,9 +93,8 @@ private:
 
 int main()
 {
+	// create an instance of the waiter class
 	static Fl_Waiter waiter;
-	if ( !waiter.ready() ) // should only happen on very old WIN32 platform
-		fprintf( stderr, "Could not initialise HiRes timer API\n" );
 
 	// tell waiter the frame rate to obey
 	waiter.FPS( FPS );
@@ -103,7 +104,7 @@ int main()
 	win.show();
 	win.wait_for_expose();
 
-	// Main loop
+	// enter the main loop (exits if window closed)
 	while ( waiter.wait() )
 	{
 		win.update();

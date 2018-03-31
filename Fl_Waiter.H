@@ -56,21 +56,33 @@ public:
 		_ready( true )
 	{
 #ifdef _WIN32
-		_ready = ( QueryPerformanceFrequency( &_frequency ) != 0 );
+		_ready = QueryPerformanceFrequency( &_frequency ) != 0;
 		QueryPerformanceCounter( &_startTime );
 #else
 #ifdef _POSIX_MONOTONIC_CLOCK
+#ifdef LOG
+		LOG( "Waiter: using clock_gettime()" );
+#endif
 		struct timespec ts;
-		clock_gettime( CLOCK_MONOTONIC, &ts );
+		_ready = clock_gettime( CLOCK_MONOTONIC, &ts ) == 0;
 		_startTime = ts.tv_sec * 1000000L + ts.tv_nsec / 1000L;
 #else
+#ifdef LOG
+		LOG( "Waiter: using gettimeofday()" );
+#endif
 		struct timeval tv;
-		gettimeofday( &tv, NULL );
+		_ready = gettimeofday( &tv, NULL ) == 0;
 		_startTime = tv.tv_sec * 1000000 + tv.tv_usec;
 #endif // _POSIX_MONOTONIC_CLOCK
 #endif // _WIN32
 
 		_endTime = _startTime;
+		if ( !_ready )
+		{
+#ifdef LOG
+			LOG( "Waiter: Could not initialise HiRes timer API" );
+#endif
+		}
 	}
 
 	unsigned int wait( unsigned int FPS_ = 0 )
