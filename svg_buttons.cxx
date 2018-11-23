@@ -126,72 +126,107 @@ public:
 	SVG_Button( int x_, int y_, int w_, int h_, const char *l_ = 0 ) :
 		Inherited( x_, y_, w_, h_, l_ ),
 		_up( 0 ),
-		_down( 0 )
+		_uphi( 0 ),
+		_down( 0 ),
+		_image( 0 )
 	{
 		labelsize( h_ / 2 );
 		callback( cb, this );
+		init_images();
 	}
 	static void cb( Fl_Widget *wgt_, void *d_ )
 	{
 		printf( "%p clicked!\n", d_ );
 	}
+	bool inside() const
+	{
+		// checks if the last event occured on top of the image
+		// i.e. an opaque part of the image data.
+		int dx = Fl::event_x() - x();
+		int dy = Fl::event_y() - y();
+		return ( dx >= 0 && dy >= 0 && dx < w() && dy < h() &&
+				   ( _image && _image->array[w() * dy * 4 + dx * 4 + 3] ) );
+	}
 	virtual int handle( int e_ )
 	{
+		if ( ( e_ == FL_PUSH || e_ == FL_RELEASE ) && !inside() )
+			return 1;
 		int ret = Inherited::handle( e_ );
-		if ( e_ == FL_ENTER )
+		if ( e_ == FL_ENTER || e_ == FL_MOVE )
 		{
-			if ( _up )
-				_up->color_average( FL_WHITE, 0.8 );
-			redraw();
+			if ( inside() )
+			{
+				if ( _image == _up )
+				{
+					_image = _uphi; // show mouse over effect
+					redraw();
+				}
+			}
+			else
+			{
+				if ( _image == _uphi )
+				{
+					_image = _up;
+					redraw();
+				}
+			}
 		}
 		else if ( e_ == FL_LEAVE || e_ == FL_PUSH )
 		{
-			string up_data = create_svg( w(), h(), style() );
-			delete _up;
-			_up = new Fl_SVG_Image( 0, up_data.c_str() );
-			redraw();
+			if ( inside() || e_ == FL_LEAVE )
+			{
+				_image = _up;
+				redraw();
+			}
 		}
 		return ret;
 	}
+	void init_images()
+	{
+		delete _up;
+		delete _uphi;
+		delete _down;
+		_up = _down = _uphi = 0;
+
+		string up_data = create_svg( w(), h(), style() );
+		string down_data = create_svg( w(), h(), style(), true );
+#if 0
+		// dump svg image to file
+		ofstream ofs("xxxx.svg");
+		ofs << up_data;
+		ofs.close();
+#endif
+		_up = new Fl_SVG_Image( 0, up_data.c_str() );
+		_up->proportional = false;
+		_down = new Fl_SVG_Image( 0, down_data.c_str() );
+		_down->proportional = false;
+		_down->color_average( FL_BLACK, 0.8 );
+		_uphi = (Fl_SVG_Image *)_up->copy();
+		_uphi->color_average( FL_WHITE, 0.8 );
+		_image = _up;
+	}
 	virtual void resize( int x_, int y_, int w_, int h_ )
 	{
-		if ( _up && (  _up->w() != w_ || _up->h() != h_ ) )
+		if ( !_up || ( _up && (  _up->w() != w_ || _up->h() != h_ ) ) )
 		{
 			double f = (double)h_ / h();
 			labelsize( lround( (double)labelsize() * f ) );
-			delete _up;
-			delete _down;
-			_up = _down = 0;
+			init_images();
 		}
 		Inherited::resize( x_, y_, w_, h_ );
 	}
 	virtual void draw()
 	{
 //		fl_rectf( x(), y(), w(), h(), parent()->color() ); // HACK: get rid of minor artefacts on edges of SVG's
-		if ( !_up )
-		{
-			string up_data = create_svg( w(), h(), style() );
-			string down_data = create_svg( w(), h(), style(), true );
-//			printf( "'%s'\n", up_data.c_str() );
-#if 0
-			// dump svg image to file
-			ofstream ofs("xxxx.svg");
-			ofs << up_data;
-			ofs.close();
-#endif
-			_up = new Fl_SVG_Image( 0, up_data.c_str() );
-			_down = new Fl_SVG_Image( 0, down_data.c_str() );
-			_down->color_average( FL_BLACK, 0.8 );
-		}
 		if ( value() )
 		{
-			_down->resize( w(),h() );
+			_down->resize( w(), h() );
 			_down->draw( x(), y() );
 		}
 		else
 		{
-			_up->resize( w(),h() );
-			_up->draw( x(), y() );
+			_image->resize( w(), h() );
+			_image->draw( x(), y() );
 		}
 		draw_label( x() + value(), y() + value(), w(), h() );
 	}
@@ -199,6 +234,7 @@ public:
 	{
 		_style = s_;
 		labelcolor( _style.textColor );
+		init_images();
 	}
 	const Style& style() const
 	{
@@ -206,7 +242,9 @@ public:
 	}
 private:
 	Fl_SVG_Image *_up;
+	Fl_SVG_Image *_uphi;
 	Fl_SVG_Image *_down;
+	Fl_SVG_Image *_image;
 	Style _style;
 };
 
