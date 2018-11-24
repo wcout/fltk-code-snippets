@@ -123,7 +123,7 @@ class SVG_Button : public Fl_Button
 {
 typedef Fl_Button Inherited;
 public:
-	SVG_Button( int x_, int y_, int w_, int h_, const char *l_ = 0 ) :
+	SVG_Button( int x_, int y_, int w_, int h_, const char *l_ = 0, const Style * style_ = 0 ) :
 		Inherited( x_, y_, w_, h_, l_ ),
 		_up( 0 ),
 		_uphi( 0 ),
@@ -132,7 +132,10 @@ public:
 	{
 		labelsize( h_ / 2 );
 		callback( cb, this );
-		init_images();
+		if ( style_ )
+			style( *style_ );
+		else
+			init_images();
 	}
 	static void cb( Fl_Widget *wgt_, void *d_ )
 	{
@@ -265,8 +268,8 @@ int main()
 	s.gradient = RADIAL;
 	s.color = FL_BLUE;
 	s.textColor = FL_WHITE;
-	SVG_Button b( 10, 10, 130, 50, "TEST" );
-	b.style(s);
+	SVG_Button b( 10, 10, 130, 50, "TEST", &s );
+//	b.style(s);
 
 	SVG_Button b2( 300, 150, 130, 130, "@>" );
 	s.color = FL_WHITE;
