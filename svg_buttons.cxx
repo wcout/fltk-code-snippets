@@ -115,7 +115,7 @@ static std::string create_svg( int w_, int h_, const Style& style_, bool down_ =
 	}
 	os <<
 		"<rect x=\""<<d<<"\" y=\""<<d<<"\" rx=\""<<roundness<<"\" width=\""
-		<<w_-d*2<<"\" height=\""<<h_-d*2<<"\" fill=\""<< fill << "\" "
+		<<w_-d*2<<"\" height=\""<<h_-d*2<<"\" fill=\""<< fill.str() << "\" "
 		"style=\"fill:"<<fill.str()<<";stroke:rgb("<<(int)bd_r<<","<<(int)bd_g<<","<<(int)bd_b<<");stroke-width:"<<style_.borderWidth<<";\" />\n"
 		"</svg>\n";
 	return  os.str();
