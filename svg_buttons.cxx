@@ -40,6 +40,7 @@ struct Style
 	Fl_Color textColor;
 	int borderWidth;
 	Fl_Color borderColor;
+	Fl_Color selectionColor;
 	int roundness;
 	int gradient;
 	Style()
@@ -52,6 +53,7 @@ struct Style
 		textColor = FL_FOREGROUND_COLOR;
 		borderWidth = 1;
 		borderColor = FL_BLACK;
+		selectionColor = FL_SELECTION_COLOR;
 		roundness = 10;
 		gradient = NONE;
 	}
@@ -62,6 +64,8 @@ static std::string create_svg( int w_, int h_, const Style& style_, bool down_ =
 	std::ostringstream os;
 	os << "<svg height=\"" << h_ << "\" width=\"" << w_ << "\" >";
 	Fl_Color c = style_.color;
+	if ( down_ && style_.selectionColor != FL_SELECTION_COLOR )
+		c = style_.selectionColor;
 	Fl_Color from = down_ ? fl_darker( fl_darker( c ) ) : fl_lighter( fl_lighter( c ) );
 	Fl_Color to = down_ ? fl_lighter( fl_lighter( c ) ) : fl_darker( fl_darker( c ) );
 	uchar from_r, from_g, from_b;
@@ -193,7 +197,7 @@ public:
 		delete _up;
 		delete _uphi;
 		delete _down;
-		_up = _down = _uphi = 0;
+		_up = _down = _uphi = _image = 0;
 
 		string up_data = create_svg( w(), h(), style() );
 		string down_data = create_svg( w(), h(), style(), true );
@@ -298,7 +302,9 @@ int main()
 	s.borderWidth = 4;
 	s.borderColor = 0x30303000;
 	s.roundness = 0;
+	s.selectionColor = FL_YELLOW;
 	b5.style(s);
+	b5.type( FL_TOGGLE_BUTTON );
 
 	win.end();
 	win.resizable( win );
