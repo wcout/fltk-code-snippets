@@ -144,8 +144,12 @@ public:
 		// i.e. an opaque part of the image data.
 		int dx = Fl::event_x() - x();
 		int dy = Fl::event_y() - y();
-		return ( dx >= 0 && dy >= 0 && dx < w() && dy < h() &&
-				   ( _image && _image->array[w() * dy * 4 + dx * 4 + 3] ) );
+		Fl_SVG_Image *image = value() ? _down : _image;
+		if ( !image )
+			return false;
+		image->resize( w(), h() ); // make sure SVG is rasterized (array is valid)
+		return ( dx >= 0 && dy >= 0 && dx < image->w() && dy < image->h() &&
+				   ( image->array[image->w() * dy * 4 + dx * 4 + 3] ) );
 	}
 	virtual int handle( int e_ )
 	{
