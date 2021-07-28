@@ -170,7 +170,7 @@ public:
 				if ( _image == _up )
 				{
 					_image = _uphi; // show mouse over effect
-					redraw();
+					parent()->redraw();
 				}
 			}
 			else
@@ -178,7 +178,7 @@ public:
 				if ( _image == _uphi )
 				{
 					_image = _up;
-					redraw();
+					parent()->redraw();
 				}
 			}
 		}
@@ -187,7 +187,7 @@ public:
 			if ( inside() || e_ == FL_LEAVE )
 			{
 				_image = _up;
-				redraw();
+				parent()->redraw();
 			}
 		}
 		return ret;
@@ -262,7 +262,7 @@ private:
 // test program
 int main()
 {
-	Fl::scheme( "plastic" ); // used, because it creates a window background
+//	Fl::scheme( "plastic" ); // used, because it creates a window background
 	                         // to watch out for outline drawing artefacts
 
 	Fl_Window win( 500, 300, "SVG Button" );
