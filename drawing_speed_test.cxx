@@ -93,6 +93,8 @@ public:
 		count++;
 		if (count >1)
 			printf("recursion %d\n", count);
+		_start = std::chrono::system_clock::now();
+
 		Fl_Double_Window::draw();
 
 		_N = 0;
@@ -101,7 +103,6 @@ public:
 		Fl::remove_timeout(cb_measure, this);
 		Fl::add_timeout(0.01, cb_measure, this);
 
-		_start = std::chrono::system_clock::now();
 
 		switch (Mode)
 		{
@@ -112,6 +113,10 @@ public:
 
 		fl_color(FL_WHITE); // white center pixel for measurement
 		fl_point(w()/2, h()/2);
+
+		_end = std::chrono::system_clock::now();
+		std::chrono::duration<double> diff = _end - _start;
+		printf("Time in draw(%d): %.9f\n", _N, diff.count());
 
 		count--;
 	}
