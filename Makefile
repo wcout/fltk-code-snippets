@@ -6,3 +6,6 @@ all:
 	$(cmd) svg_clock.cxx
 	$(cmd) svg_circle.cxx
 	$(cmd) waiter.cxx
+	$(cmd) swirl.cxx
+	$(cmd) drawing_speed_test.cxx
+	$(cmd) psycho.cxx
